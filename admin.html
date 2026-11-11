@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ-панель — Мама рядом</title>
+
+  <style>
+    :root {
+      --bg: #f7f6f2;
+      --surface: #fff;
+      --ink: #343431;
+      --muted: #77766f;
+      --line: #eae7df;
+      --accent: #bd716b;
+      --green: #e8ede2;
+      --shadow: 0 10px 30px rgba(50, 45, 35, .06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 18px max(5%, calc((100% - 1200px) / 2));
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      font: bold 24px Georgia, serif;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .logo span { color: var(--accent); }
+
+    header a:last-child {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 35px 20px 60px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font: 500 36px Georgia, serif;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    .stat, .table-wrap, .order-details {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat { padding: 20px; }
+    .stat span { color: var(--muted); font-size: 14px; }
+    .stat strong { display: block; margin-top: 10px; font-size: 28px; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .toolbar input, .toolbar select {
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: white;
+    }
+
+    .toolbar input { flex: 1; min-width: 220px; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 15px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+
+    .status-select {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: white;
+    }
+
+    .details-button {
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--green);
+      color: #495443;
+    }
+
+    .empty {
+      padding: 40px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .order-details {
+      display: none;
+      margin-top: 18px;
+      padding: 22px;
+    }
+
+    .order-details.show { display: block; }
+
+    .details-heading {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: start;
+    }
+
+    .details-heading h2 {
+      margin: 0 0 14px;
+      font: 500 25px Georgia, serif;
+    }
+
+    .close-button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--bg);
+      font-size: 20px;
+    }
+
+    .customer-info {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .items-list {
+      margin: 18px 0;
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    .total {
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #fff3df;
+      color: #705729;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 650px) {
+      header { padding: 16px 20px; }
+      main { padding-top: 25px; }
+      h1 { font-size: 30px; }
+      .stats { grid-template-columns: 1fr; gap: 10px; }
+      .stat { padding: 16px; }
+      .stat strong { font-size: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a class="logo" href="index.html">мама <span>рядом</span></a>
+    <a href="index.html">← Вернуться в магазин</a>
+  </header>
+
+  <main>
+    <h1>Обработка заказов</h1>
+    <p class="subtitle">Просматривайте заказы и обновляйте их статус.</p>
+
+    <section class="stats" aria-label="Статистика заказов">
+      <div class="stat">
+        <span>Всего заказов</span>
+        <strong id="totalOrders">0</strong>
+      </div>
+      <div class="stat">
+        <span>Новые заказы</span>
+        <strong id="newOrders">0</strong>
+      </div>
+      <div class="stat">
+        <span>Сумма заказов</span>
+        <strong id="totalRevenue">0 ₽</strong>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Поиск по номеру, имени или телефону">
+      <select id="statusFilter" aria-label="Фильтр по статусу">
+        <option value="">Все статусы</option>
+        <option value="Новый">Новый</option>
+        <option value="В обработке">В обработке</option>
+        <option value="Отправлен">Отправлен</option>
+        <option value="Выполнен">Выполнен</option>
+        <option value="Отменён">Отменён</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Заказ</th>
+            <th>Дата</th>
+            <th>Покупатель</th>
+            <th>Телефон</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+            <th>Детали</th>
+          </tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+      </table>
+      <div id="emptyMessage" class="empty" hidden>
+        Заказов пока нет. Оформите тестовый заказ в магазине.
+      </div>
+    </div>
+
+    <section class="order-details" id="orderDetails"></section>
+
+    <div class="notice">
+      Учебная версия: данные хранятся только в localStorage текущего браузера.
+      Для реальной работы магазина нужны сервер, база данных и авторизация администратора.
+    </div>
+  </main>
+
+  <script>
+    const statuses = [
+      "Новый",
+      "В обработке",
+      "Отправлен",
+      "Выполнен",
+      "Отменён"
+    ];
+
+    const table = document.getElementById("ordersTable");
+    const searchInput = document.getElementById("search");
+    const statusFilter = document.getElementById("statusFilter");
+    const detailsPanel = document.getElementById("orderDetails");
+
+    function getOrders() {
+      return JSON.parse(localStorage.getItem("mamaOrders") || "[]");
+    }
+
+    function saveOrders(orders) {
+      localStorage.setItem("mamaOrders", JSON.stringify(orders));
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function formatPrice(value) {
+      return Number(value || 0).toLocaleString("ru-RU") + " ₽";
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      return isNaN(date) ? "—" : date.toLocaleString("ru-RU");
+    }
+
+    function updateStats(orders) {
+      const newCount = orders.filter(order => order.status === "Новый").length;
+      const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+
+      document.getElementById("totalOrders").textContent = orders.length;
+      document.getElementById("newOrders").textContent = newCount;
+      document.getElementById("totalRevenue").textContent = formatPrice(revenue);
+    }
+
+    function renderOrders() {
+      const orders = getOrders();
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedStatus = statusFilter.value;
+
+      updateStats(orders);
+
+      const visibleOrders = orders.filter(order => {
+        const customer = order.customer || {};
+        const matchesQuery = [
+          order.id,
+          customer.name,
+          customer.phone
+        ].join(" ").toLowerCase().includes(query);
+
+        const matchesStatus = !selectedStatus || order.status === selectedStatus;
+        return matchesQuery && matchesStatus;
+      });
+
+      document.getElementById("emptyMessage").hidden = visibleOrders.length > 0;
+
+      table.innerHTML = visibleOrders.map(order => {
+        const customer = order.customer || {};
+        const options = statuses.map(status => `
+          <option value="${status}" ${order.status === status ? "selected" : ""}>
+            ${status}
+          </option>
+        `).join("");
+
+        return `
+          <tr>
+            <td>#${escapeHTML(order.id)}</td>
+            <td>${escapeHTML(formatDate(order.date))}</td>
+            <td>${escapeHTML(customer.name)}</td>
+            <td>${escapeHTML(customer.phone)}</td>
+            <td>${escapeHTML(formatPrice(order.total))}</td>
+            <td>
+              <select class="status-select" data-status-id="${escapeHTML(order.id)}">
+                ${options}
+              </select>
+            </td>
+            <td>
+              <button class="details-button" data-details-id="${escapeHTML(order.id)}">
+                Открыть
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function showOrderDetails(orderId) {
+      const order = getOrders().find(item => String(item.id) === String(orderId));
+      if (!order) return;
+
+      const customer = order.customer || {};
+      const items = Array.isArray(order.items) ? order.items : [];
+
+      detailsPanel.innerHTML = `
+        <div class="details-heading">
+          <h2>Заказ №${escapeHTML(order.id)}</h2>
+          <button class="close-button" id="closeDetails" aria-label="Закрыть">×</button>
+        </div>
+
+        <div class="customer-info">
+          <strong>Покупатель:</strong> ${escapeHTML(customer.name)}<br>
+          <strong>Телефон:</strong> ${escapeHTML(customer.phone)}<br>
+          <strong>Адрес:</strong> ${escapeHTML(customer.address)}<br>
+          <strong>Дата:</strong> ${escapeHTML(formatDate(order.date))}<br>
+          <strong>Статус:</strong> ${escapeHTML(order.status)}
+        </div>
+
+        <h3>Состав заказа</h3>
+        <ul class="items-list">
+          ${items.map(item => `
+            <li>
+              ${escapeHTML(item.name)} — ${escapeHTML(item.quantity)} шт.
+              × ${escapeHTML(formatPrice(item.price))}
+            </li>
+          `).join("")}
+        </ul>
+
+        <div class="total">Итого: ${escapeHTML(formatPrice(order.total))}</div>
+      `;
+
+      detailsPanel.classList.add("show");
+      detailsPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    table.addEventListener("change", event => {
+      const select = event.target.closest("[data-status-id]");
+      if (!select) return;
+
+      const orders = getOrders();
+      const order = orders.find(item => String(item.id) === select.dataset.statusId);
+
+      if (order) {
+        order.status = select.value;
+        saveOrders(orders);
+        renderOrders();
+
+        if (detailsPanel.classList.contains("show")) {
+          showOrderDetails(order.id);
+        }
+      }
+    });
+
+    table.addEventListener("click", event => {
+      const button = event.target.closest("[data-details-id]");
+      if (button) showOrderDetails(button.dataset.detailsId);
+    });
+
+    detailsPanel.addEventListener("click", event => {
+      if (event.target.id === "closeDetails") {
+        detailsPanel.classList.remove("show");
+      }
+    });
+
+    searchInput.addEventListener("input", renderOrders);
+    statusFilter.addEventListener("change", renderOrders);
+
+    renderOrders();
+  </script>
+</body>
+</html>
